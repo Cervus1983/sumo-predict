@@ -69,9 +69,9 @@ sumodbBoutQueryPages <- function(url) {
 		# clean up
 		mutate(
 			day = as.integer(day),
-			win1 = recode(win1, "img/hoshi_kuro.gif" = 0, "img/hoshi_shiro.gif" = 1),
+			win1 = recode(win1, "img/hoshi_kuro.gif" = 0, "img/hoshi_shiro.gif" = 1, "img/hoshi_fusenpai.gif" = 0, "img/hoshi_fusensho.gif" = 1),
 			kimarite = str_match(kimarite, "(\\w+)$")[, 2],
-			win2 = recode(win2, "img/hoshi_kuro.gif" = 0, "img/hoshi_shiro.gif" = 1)
+			win2 = recode(win2, "img/hoshi_kuro.gif" = 0, "img/hoshi_shiro.gif" = 1, "img/hoshi_fusenpai.gif" = 0, "img/hoshi_fusensho.gif" = 1)
 		)
 }
 
@@ -79,21 +79,28 @@ sumodbBoutQueryPages <- function(url) {
 # Bout Query wrapper
 sumodbBoutQuery <- function(
 	basho = substr(Sys.Date(), 1, 4), # default: this year
+	day = NA,
 	division = NA, # subset of c("m", "j", "ms", "sd", "jd", "jk", "mz")
 	shikona1 = NA,
-	shikona2 = NA
+	rank1 = NA,
+	shikona2 = NA,
+	rank2 = NA
 ) {
 	sumodbBoutQueryPages(
 		paste(
 			"http://sumodb.sumogames.de/Query_bout.aspx?show_form=0&rowcount=5",
 			ifelse(is.na(basho), "", paste0("year=", basho)),
+			ifelse(is.na(day), "", paste0("day=", day)),
 			ifelse(is.na(division), "", paste0(division, "=on", collapse = "&")),
 			ifelse(is.na(shikona1), "", paste0("shikona1=", shikona1)),
+			ifelse(is.na(rank1), "", paste0("rank1=", rank1)),
 			ifelse(is.na(shikona2), "", paste0("shikona2=", shikona2)),
+			ifelse(is.na(rank2), "", paste0("rank2=", rank2)),
 			sep = "&"
 		)
 	)
 }
 
 
-df <- sumodbBoutQuery(basho = NA, shikona1 = "Hakuho", shikona2 = "Harumafuji")
+# example
+# df <- sumodbBoutQuery(basho = NA, shikona1 = "Hakuho", shikona2 = "Harumafuji")
