@@ -1,3 +1,5 @@
+# interface to http://sumodb.sumogames.de/Query_bout.aspx
+
 library(dplyr)
 library(stringr)
 library(XML)
@@ -77,6 +79,7 @@ sumodbBoutQueryPages <- function(url) {
 
 
 # Bout Query wrapper
+# example: sumodbBoutQuery(basho = NA, shikona1 = "Hakuho", shikona2 = "Harumafuji")
 sumodbBoutQuery <- function(
 	basho = substr(Sys.Date(), 1, 4), # default: this year
 	day = NA,
@@ -100,7 +103,3 @@ sumodbBoutQuery <- function(
 		)
 	)
 }
-
-
-# example
-# df <- sumodbBoutQuery(basho = NA, shikona1 = "Hakuho", shikona2 = "Harumafuji")
