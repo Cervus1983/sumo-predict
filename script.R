@@ -1,7 +1,11 @@
+library(dplyr)
 library(ROCR)
+library(stringr)
+library(tidyr)
+library(XML)
 
-# interface to http://sumodb.sumogames.de/Query_bout.aspx
-source("sumodb.R")
+options(stringsAsFactors = FALSE)
+
 
 # common functions used in models
 source("functions.R")
@@ -17,6 +21,9 @@ if(TRUE) {
 	
 	# random forest
 	source("models/randomForest.R")
+
+	# Bayesian approach
+	source("models/bayesian.R")
 }
 
 
@@ -32,16 +39,18 @@ clean <- function(df) {
 # train & test data sets
 if(TRUE) {
 	train.data <- clean(
-		rbind(
-			sumodbBoutQuery(basho = "2016.01", division = "m"),
-			sumodbBoutQuery(basho = "2016.03", division = "m"),
-			sumodbBoutQuery(basho = "2016.05", division = "m"),
-			sumodbBoutQuery(basho = "2016.07", division = "m"),
-			sumodbBoutQuery(basho = "2016.09", division = "m")
+		do.call(
+			rbind,
+			lapply(
+				c("2016.01", "2016.03", "2016.05", "2016.07", "2016.09"),
+				function(x) read.csv(
+					paste0("https://raw.githubusercontent.com/Cervus1983/sumodb/master/CSV/", x, ".results.csv")
+				)
+			)
 		)
 	)
 
-	test.data <- clean(sumodbBoutQuery(basho = "2016.11", division = "m"))
+	test.data <- clean(read.csv("https://raw.githubusercontent.com/Cervus1983/sumodb/master/CSV/2016.11.results.csv"))
 }
 
 
@@ -85,5 +94,6 @@ evaluate <- function(model) {
 
 # evaluate models one by one
 evaluate("randomGuess")
-evaluate("histWinRate") # AUC = 61.6%
-evaluate("randomForest") # 62.3%
+evaluate("histWinRate") # AUC = 61.8%
+evaluate("randomForest") # AUC ~ 58%-60%
+evaluate("bayesian") # 68.2%

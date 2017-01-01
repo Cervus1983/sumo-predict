@@ -11,7 +11,13 @@ rankToStr <- function(s) {
 
 # adds columns "ordinal1" & "ordinal2" (deduced from "rank1" & "rank2")
 withOrdinals <- function(df) {
-	map <- unique(df %>% mutate(s = rankToStr(rank1)) %>% select(basho, rank = rank1, s)) %>%
+	map <- unique(
+		df %>%
+			select(basho, rank1, rank2) %>%
+			gather(temp, rank, -basho) %>%
+			select(-temp) %>%
+			mutate(s = rankToStr(rank))
+	) %>%
 		arrange(basho, s) %>%
 		group_by(basho) %>%
 		mutate(ordinal = row_number()) %>%

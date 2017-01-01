@@ -21,19 +21,17 @@ randomForest <- function(train.data, test.data) {
 		)
 	}
 
-	# train model on enriched train.data (odd rows)
+	# train model on enriched train.data 
 	fit <- randomForest::randomForest(
 		formula = win1 ~ ordinal1 + ordinal2 + below + level1 + level2, # + win.rate.before1 + win.rate.before2,
-		data = addFeatures(train.data)[c(TRUE, FALSE), ],
+		data = addFeatures(train.data),
 		importance = TRUE
 	)
 
-	# predict outcomes for test.data (odd rows)
-	p <- predict(
+	# predict outcomes for test.data
+	predict(
 		fit,
-		addFeatures(test.data)[c(TRUE, FALSE), ],
+		addFeatures(test.data),
 		type = "prob"
 	)[, 2] # select probability of 1 (first rikishi wins)
-	
-	c(rbind(p, 1 - p)) # add complementary probabilities (second rikishi wins)
 }
