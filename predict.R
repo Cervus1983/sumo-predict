@@ -48,6 +48,10 @@ skill <- trainBayes(train.data)	%>%
 banzuke[banzuke$rikishi == "Sato", ]$rikishi <- "Takakeisho"
 
 
+# Who's the top dog?
+table(colnames(skill)[apply(skill, 1, which.max)])
+
+
 # returns vector of probabilities for rikishi1 winning
 predict <- function(rikishi1, rikishi2) plogis(skill[[rikishi1]] - skill[[rikishi2]])
 

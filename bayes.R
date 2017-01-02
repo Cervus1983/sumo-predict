@@ -58,5 +58,5 @@ trainBayes <- function(data) {
 	output <- as.data.frame(extract(model)$skill)
 	colnames(output) <- rikishi$shikona
 	
-	return(output)
+	output
 }
