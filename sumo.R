@@ -20,7 +20,7 @@ rankOrder <- function(rank){
 
 
 # returns list of available basho (tournament)
-getBasho <- function() str_match_all(
+getBashoList <- function() str_match_all(
 	content(GET(url = "https://github.com/Cervus1983/sumodb/tree/all-divisions/CSV"), "text"),
 	">([0-9]{4}\\.[0-9]{2})\\.results\\.csv<" # as long as there's a results.csv
 )[[1]][, 2]
