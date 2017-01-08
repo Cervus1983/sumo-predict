@@ -32,7 +32,7 @@ testModel <- function(basho) {
 	skill <- trainBayes(train.data)
 
 	# sanity check: who is the top dog?
-	# table(colnames(skill[, banzuke$rikishi])[apply(skill[, banzuke$rikishi], 1, which.max)])
+	print(table(colnames(skill[, banzuke$rikishi])[apply(skill[, banzuke$rikishi], 1, which.max)]))
 
 
 	# returns vector of probabilities for rikishi1 winning
@@ -49,7 +49,7 @@ testModel <- function(basho) {
 	
 
 	# How much would I've won if I'd betted on bouts with positive EV (according to the model)?
-	merge(
+	df <- merge(
 		odds %>% filter(EV1 > 1 | EV2 > 1),
 		getResults(basho) %>% select(rikishi1 = shikona1, rikishi2 = shikona2, win1, win2, kimarite)
 	) %>%
@@ -65,10 +65,14 @@ testModel <- function(basho) {
 			bets.offered = nrow(odds),
 			bets.placed = n(),
 			bets.settled = sum(!is.na(profit)),
-			profit = sum(profit),
+			profit = sum(profit, na.rm = TRUE),
 			per.settled.bet = profit / bets.settled,
 			per.offered.bet = profit / bets.offered
 		)
+	
+	print.data.frame(df)
+	
+	df
 }
 
 
@@ -80,3 +84,11 @@ do.call(
 		testModel
 	)
 )
+
+# basho 	bets.offered bets.placed bets.settled profit per.settled.bet per.offered.bet
+# 2012.07          126          86           85  24.75      0.29117647      0.19642857
+# 2012.09           61          37           37   3.06      0.08270270      0.05016393
+# 2012.11           99          69           68   5.35      0.07867647      0.05404040
+# 2013.01          139          97           97  -7.54     -0.07773196     -0.05424460
+# 2013.03          140          96           96  15.81      0.16468750      0.11292857
+# 2013.05          123          79           79   5.09      0.06443038      0.04138211
